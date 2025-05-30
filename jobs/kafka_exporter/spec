@@ -1,0 +1,8 @@
+---
+name: kafka_exporter
+
+templates: {}
+
+packages: []
+
+properties: {}
