@@ -1,8 +1,105 @@
 ---
 name: kafka_exporter
 
-templates: {}
+templates:
+    bin/kafka_exporter_ctl: bin/kafka_exporter_ctl
 
-packages: []
+packages:
+    - kafka_exporter
 
-properties: {}
+properties:
+  kafka_exporter.kafka.server:
+    description: "Addresses (host:port) of Kafka server"
+  kafka_exporter.kafka.version:
+    description: "Kafka broker version"
+  kafka_exporter.sasl.enabled:
+    description: "Connect using SASL/PLAIN"
+    default: false
+  kafka_exporter.sasl.handshake:
+    description: "Only set this to false if using a non-Kafka SASL proxy"
+    default: true
+  kafka_exporter.sasl.username:
+    description: "SASL user name"
+  kafka_exporter.sasl.password:
+    description: "SASL user password"
+  kafka_exporter.sasl.mechanism:
+    description: "SASL SCRAM SHA algorithm: sha256 or sha512 or SASL mechanism: gssapi or awsiam"
+  kafka_exporter.sasl.aws-region:
+    description: "The AWS region for IAM SASL authentication"
+  kafka_exporter.sasl.service-name:
+    description: "Service name when using Kerberos Auth"
+  kafka_exporter.sasl.kerberos-config-path:
+    description: "Kerberos config path"
+  kafka_exporter.sasl.realm:
+    description: "Kerberos realm"
+  kafka_exporter.sasl.keytab-path:
+    description: "Kerberos keytab file path"
+  kafka_exporter.sasl.kerberos-auth-type:
+    description: "Kerberos auth type. Either 'keytabAuth' or 'userAuth'"
+  kafka_exporter.kafka.labels:
+    description: "Export stats for shards in the cluster (implies --es.indices)"
+    default: false
+  kafka_exporter.tls.enabled:
+    description: "Connect to Kafka using TLS"
+    default: false
+  kafka_exporter.tls.server-name:
+    description: "Used to verify the hostname on the returned certificates unless tls.insecure-skip-tls-verify is given. The kafka server's name should be given"
+  kafka_exporter.tls.ca-file:
+    description: "The optional certificate authority file for Kafka TLS client authentication"
+  kafka_exporter.tls.cert-file:
+    description: "The optional certificate file for Kafka client authentication"
+  kafka_exporter.tls.key-file:
+    description: "The optional key file for Kafka client authentication"
+  kafka_exporter.tls.insecure-skip-tls-verify:
+    description: "If true, the server's certificate will not be checked for validity"
+    default: false
+  kafka_exporter.server.tls.enabled:
+    description: "Enable TLS for web server"
+    default: false
+  kafka_exporter.server.tls.mutual-auth-enabled:
+    description: "Enable TLS client mutual authentication"
+    default: false
+  kafka_exporter.server.tls.ca-file:
+    description: "The certificate authority file for the web server"
+  kafka_exporter.server.tls.cert-file:
+    description: "The certificate file for the web server"
+  kafka_exporter.server.tls.key-file:
+    description: "The key file for the web server"
+  kafka_exporter.topic.filter:
+    description: "Regex that determines which topics to collect"
+  kafka_exporter.topic.exclude:
+    description: "Regex that determines which topics to exclude"
+  kafka_exporter.topic.workers:
+    description: "Number of topic workers"
+    default: 100
+  kafka_exporter.group.filter:
+    description: "Regex that determines which consumer groups to collect"
+  kafka_exporter.group.exclude:
+    description: "Regex that determines which consumer groups to exclude"
+  kafka_exporter.web.listen-address:
+    description: "Address to listen on for web interface and telemetry"
+    default: 9308
+  kafka_exporter.web.telemetry-path:
+    description: "Path under which to expose metrics"
+    default: "/metrics"
+  kafka_exporter.log.enable-sarama:
+    description: "Turn on Sarama logging"
+    default: false
+  kafka_exporter.use.consumelag.zookeeper:
+    description: "if you need to use a group from zookeeper"
+    default: false
+  kafka_exporter.zookeeper.server:
+    description: "Address (hosts) of zookeeper server"
+    default: "localhost:2181"
+  kafka_exporter.refresh.metadata:
+    description: "Metadata refresh interval"
+    default: "30s"
+  kafka_exporter.offset.show-all:
+    description: "Whether show the offset/lag for all consumer group, otherwise, only show connected consumer groups"
+    default: true
+  kafka_exporter.concurrent.enable:
+    description: "If true, all scrapes will trigger kafka operations otherwise, they will share results. WARN: This should be disabled on large clusters"
+    default: false
+  kafka_exporter.verbosity:
+    description: "Verbosity log level"
+    default: 0

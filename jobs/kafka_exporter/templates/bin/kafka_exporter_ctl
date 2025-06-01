@@ -1,0 +1,152 @@
+#!/bin/bash
+
+set -eu
+
+RUN_DIR=/var/vcap/sys/run/kafka_exporter
+LOG_DIR=/var/vcap/sys/log/kafka_exporter
+TMP_DIR=/var/vcap/sys/tmp/kafka_exporter
+STORE_DIR=/var/vcap/store/kafka_exporter
+mkdir -p ${RUN_DIR} ${LOG_DIR} ${TMP_DIR} ${STORE_DIR}
+
+PIDFILE=${RUN_DIR}/kafka_exporter.pid
+
+export PATH=/var/vcap/packages/kafka_exporter/bin:${PATH}
+
+case $1 in
+  start)
+    pid_guard ${PIDFILE} "kafka_exporter"
+    echo $$ > ${PIDFILE}
+
+    exec kafka_exporter \
+      <% if_p('kafka_exporter.kafka.server') do |server| %> \
+      --kafka.server=<%= server%> \
+      <% end %> \
+      <% if_p('kafka_exporter.kafka.version') do |version| %> \
+      --kafka.version=<%= version%> \
+      <% end %> \
+      <% if p('kafka_exporter.sasl.enabled') %> \
+      --sasl.enabled \
+      <% end %> \
+      <% if p('kafka_exporter.sasl.handshake') %> \
+      --sasl.handshake \
+      <% end %> \
+      <% if_p('kafka_exporter.sasl.username') do |username| %> \
+      --sasl.username=<%= username%> \
+      <% end %> \
+      <% if_p('kafka_exporter.sasl.password') do |password| %> \
+      --sasl.password=<%= password%> \
+      <% end %> \
+      <% if_p('kafka_exporter.sasl.mechanism') do |mechanism| %> \
+      --sasl.mechanism=<%= mechanism%> \
+      <% end %> \
+      <% if_p('kafka_exporter.sasl.aws-region') do |aws-region| %> \
+      --sasl.aws-region=<%= aws-region%> \
+      <% end %> \
+      <% if_p('kafka_exporter.sasl.service-name') do |service-name| %> \
+      --sasl.service-name=<%= service-name%> \
+      <% end %> \
+      <% if_p('kafka_exporter.sasl.kerberos-config-path') do |kerberos-config-path| %> \
+      --sasl.kerberos-config-path=<%= kerberos-config-path%> \
+      <% end %> \
+      <% if_p('kafka_exporter.sasl.realm') do |realm| %> \
+      --sasl.realm=<%= realm%> \
+      <% end %> \
+      <% if_p('kafka_exporter.sasl.keytab-path') do |keytab-path| %> \
+      --sasl.keytab-path=<%= keytab-path%> \
+      <% end %> \
+      <% if_p('kafka_exporter.sasl.kerberos-auth-type') do |kerberos-auth-type| %> \
+      --sasl.kerberos-auth-type=<%= kerberos-auth-type%> \
+      <% end %> \
+      <% if_p('kafka_exporter.kafka.labels') do |labels| %> \
+      --kafka.labels=<%= labels%> \
+      <% end %> \
+      <% if_p('kafka_exporter.tls.enabled') %> \
+      --tls.enabled \
+      <% end %> \
+      <% if_p('kafka_exporter.tls.server-name') do |server-name| %> \
+      --tls.server-name=<%= server-name%> \
+      <% end %> \
+      <% if_p('kafka_exporter.tls.ca-file') do |ca-file| %> \
+      --tls.ca-file=<%= ca-file%> \
+      <% end %> \
+      <% if_p('kafka_exporter.tls.cert-file') do |cert-file| %> \
+      --tls.cert-file=<%= cert-file%> \
+      <% end %> \
+      <% if_p('kafka_exporter.tls.key-file') do |key-file| %> \
+      --tls.key-file=<%= key-file%> \
+      <% end %> \
+      <% if_p('kafka_exporter.tls.insecure-skip-tls-verify') %> \
+      --tls.insecure-skip-tls-verify \
+      <% end %> \
+      <% if_p('kafka_exporter.server.tls.enabled') %> \
+      --server.tls.enabled \
+      <% end %> \
+      <% if_p('kafka_exporter.server.tls.mutual-auth-enabled') %> \
+      --server.tls.mutual-auth-enabled \
+      <% end %> \
+      <% if_p('kafka_exporter.server.tls.ca-file') do |ca-file| %> \
+      --server.tls.ca-file=<%= ca-file%> \
+      <% end %> \
+      <% if_p('kafka_exporter.server.tls.cert-file') do |cert-file| %> \
+      --server.tls.cert-file=<%= cert-file%> \
+      <% end %> \
+      <% if_p('kafka_exporter.server.tls.key-file') do |key-file| %> \
+      --server.tls.key-file=<%= key-file%> \
+      <% end %> \
+      <% if_p('kafka_exporter.topic.filter') do |filter| %> \
+      --topic.filter=<%= filter%> \
+      <% end %> \
+      <% if_p('kafka_exporter.topic.exclude') do |exclude| %> \
+      --topic.exclude=<%= exclude%> \
+      <% end %> \
+      <% if_p('kafka_exporter.topic.workers') do |workers| %> \
+      --topic.workers=<%= workers%> \
+      <% end %> \
+      <% if_p('kafka_exporter.group.filter') do |filter| %> \
+      --group.filter=<%= filter%> \
+      <% end %> \
+      <% if_p('kafka_exporter.group.exclude') do |exclude| %> \
+      --group.exclude=<%= exclude%> \
+      <% end %> \
+      <% if_p('kafka_exporter.web.listen-address') do |listen-address| %> \
+      --web.listen-address=<%= listen-address%> \
+      <% end %> \
+      <% if_p('kafka_exporter.web.telemetry-path') do |telemetry-path| %> \
+      --web.telemetry-path=<%= telemetry-path%> \
+      <% end %> \
+      <% if_p('kafka_exporter.log.enable-sarama') %> \
+      --log.enable-sarama \
+      <% end %> \
+      <% if_p('kafka_exporter.use.consumelag.zookeeper') %> \
+      --use.consumelag.zookeeper \
+      <% end %> \
+      <% if_p('kafka_exporter.zookeeper.server') %> \
+      --zookeeper.server \
+      <% end %> \
+      <% if_p('kafka_exporter.refresh.metadata') do |metadata| %> \
+      --refresh.metadata=<%= metadata%> \
+      <% end %> \
+      <% if_p('kafka_exporter.offset.show-all') %> \
+      --offset.show-all \
+      <% end %> \
+      <% if_p('kafka_exporter.concurrent.enable') %> \
+      --concurrent.enable \
+      <% end %> \
+      <% if_p('kafka_exporter.verbosity') do |verbosity| %> \
+      --verbosity=<%= verbosity%> \
+      <% end %> \
+      >>  ${LOG_DIR}/kafka_exporter.stdout.log \
+      2>> ${LOG_DIR}/kafka_exporter.stderr.log
+    ;;
+
+  stop)
+    kill_and_wait ${PIDFILE}
+    ;;
+
+  *)
+    echo "Usage: $0 {start|stop}"
+    exit 1
+    ;;
+
+esac
+exit 0
